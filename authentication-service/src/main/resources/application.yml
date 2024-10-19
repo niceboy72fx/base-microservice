@@ -1,0 +1,57 @@
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: authentication-service
+  jackson.serialization.indent_output: true
+  devtools:
+    add-properties: true
+  datasource:
+    url: jdbc:postgresql://auth-database:5170/authDb
+    username: postgres
+    password: password
+#  flyway:
+#    enabled: true
+#    baseline-on-migrate: true
+#    locations: classpath:db/migration
+#    clean-disabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        boot:
+          allow_jdbc_metadata_access: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+redis:
+  host: auth-redis
+  port: 6370
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+openapi:
+  service:
+    api-docs: authentication-service
+    server: http://localhost:${server.port}
+    title: Authentication service
+    version: 1.0.0
+
+
+jwt:
+  expiryMinutes: 5
+  expiryDay: 14
+  accessKey: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
+  refreshKey: 9k1jJAWAKQCnCEz1pwcPNegbHoLugf9hgEnn6sz5pFc=
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
