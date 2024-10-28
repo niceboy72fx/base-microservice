@@ -15,11 +15,11 @@ public enum UserType {
     @JsonProperty("user")
     USER("user");
 
-    private String value;
 
     private final String userType;
 
     UserType(String userType){
         this.userType = userType;
     }
+
 }

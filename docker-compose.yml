@@ -38,7 +38,7 @@ services:
   #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   # API GATEWAY
-  #  api-gateway:
+  # api-gateway:
   #    container_name: api-gateway
   #    build:
   #      context: ./api-gateway
@@ -49,8 +49,8 @@ services:
   #      - '4953:4953'
   #    networks:
   #      - default
-  #
-  #  redis-gateway:
+
+  # redis-gateway:
   #    image: redis:6.2-alpine
   #    container_name: redis-gateway
   #    hostname: redis
@@ -62,19 +62,18 @@ services:
   #    networks:
   #      - default
 
-
   # authentication's service #####################################################################
   auth-redis:
     image: redis:6.2-alpine
     container_name: auth-redis
     hostname: redis
     ports:
-      - '6370:6370'
+      - '6370:6379'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
-#    networks:
-#      - default
+    networks:
+      - default
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 3s
@@ -83,40 +82,42 @@ services:
 
   auth-database:
     image: postgres:17.0-alpine3.20
-    container_name: auth-database	
+    container_name: auth-database
     environment:
-      - PGUSER=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=authDb
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: authDb
+      PGDATA: /data/postgres
     ports:
-      - '5170:5170'
-#    volumes:
-#          - ./db:/var/lib/postgresql/data
+      - '5170:5432'
+    volumes:
+      - postgres:/data/postgres
+      - ./db/initdb.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 3s
       timeout: 20s
       retries: 8
-#    networks:
-#      - default
+    networks:
+      - default
 
   auth-service:
     container_name: authentication-service
     build:
       context: ./authentication-service
       dockerfile: Dockerfile
-#    environment:
-#      HOST_NAME: host.docker.internal
+    environment:
+      HOST_NAME: host.docker.internal
     ports:
       - '8083:8083'
-#    networks:
-#      - default
+    networks:
+      - default
     depends_on:
       auth-database:
         condition: service_healthy
       auth-redis:
-          condition: service_healthy
+        condition: service_healthy
 
 ## ACCOUNT SERVICE
 #
@@ -217,6 +218,9 @@ services:
 #    networks:
 #      - default
 
-#networks:
-#  default:
-#    name: api-network
+networks:
+  default:
+    name: api-network
+
+volumes:
+  postgres:

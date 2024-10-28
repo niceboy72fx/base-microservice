@@ -1,39 +1,26 @@
-## Use an official OpenJDK runtime as a parent image
-#FROM openjdk:17-jdk-slim
-#
-#RUN mvn clean package
-## Argument for the JAR file location (build output)
-#ARG JAR_FILE=target/*.jar
-#
-## Copy the JAR file into the container
-#COPY ${JAR_FILE} /app/authentication-service.jar
-#
-## Set the working directory inside the container
-#WORKDIR /app
-#
-## Expose the application port
-#EXPOSE 8083
-#
-## Run the Spring Boot application
-#ENTRYPOINT ["java", "-jar", "authentication-service.jar"]
+FROM openjdk:17-jdk-slim AS build
 
+RUN apt-get update && apt-get install -y maven
+WORKDIR /app
 
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the project and build the JAR
+COPY ./ ./
+RUN mvn clean package -DskipTests
+
+# Stage 2: Create the runtime image
 FROM openjdk:17-jdk-alpine
 
 WORKDIR /app
 
-COPY ./pom.xml .
+# Copy the JAR file from the 'build' stage
+COPY --from=build /app/target/*.jar app.jar
 
-RUN mvn dependency:go-offline -B
-
-COPY ./ ./
-
-RUN mvn clean package -DskipTests
-
-ARG JAR_FILE=target/authentication-service.jar
-
-COPY ${JAR_FILE} app.jar
-
+# Expose the required port
 EXPOSE 8083
 
-ENTRYPOINT ["java", "-jar", "authentication-service.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

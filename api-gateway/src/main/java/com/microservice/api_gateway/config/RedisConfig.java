@@ -1,4 +1,4 @@
-package com.microservice.authentication_service.config;
+package com.microservice.api_gateway.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +12,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 
 @Configuration
 @EnableRedisRepositories
+@Profile({"dev", "test"})
 @Slf4j(topic = "REDIS-CONFIG")
 public class RedisConfig {
 

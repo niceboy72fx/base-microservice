@@ -39,6 +39,21 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
+    public User(String email, String firstName, String lastName, Date dateOfBirth, Gender gender, String phone, String username, String password, UserType type, UserStatus status, Set<UserHasRole> roles, Set<GroupHasUser> groups) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.phone = phone;
+        this.username = username;
+        this.password = password;
+        this.type = type;
+        this.status = status;
+        this.roles = roles;
+        this.groups = groups;
+    }
+
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "gender")
@@ -83,7 +98,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
      */
     @Override
     public String getPassword() {
-        return this.getPassword();
+        return password;
     }
 
     /**
@@ -91,7 +106,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
      */
     @Override
     public String getUsername() {
-        return this.getUsername();
+        return username;
     }
 
 

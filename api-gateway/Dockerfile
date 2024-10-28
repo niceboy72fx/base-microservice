@@ -1,9 +1,20 @@
-FROM openjdk:17
+FROM openjdk:17-jdk-slim AS build
 
-ARG JAR_FILE=target/*.jar
+RUN apt-get update && apt-get install -y maven
+WORKDIR /app
 
-ADD ${JAR_FILE} api-gateway.jar
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-ENTRYPOINT ["java", "-jar", "api-gateway.jar"]
+COPY ./ ./
+RUN mvn clean package -DskipTests
 
-EXPOSE 8080
+FROM openjdk:17-jdk-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 4953
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

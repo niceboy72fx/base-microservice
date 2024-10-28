@@ -6,13 +6,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.yaml.snakeyaml.constructor.ConstructorException;
+
+import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalException {
@@ -40,6 +44,21 @@ public class GlobalException {
                                         }"""
                             )))
     })
+
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex, WebRequest request) {
+        String path = request.getDescription(false).replace("uri=", "");
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid request",
+                path,
+                ex.getMessage()
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     public Error handleValidationException(Exception e, WebRequest request) {
 //        Error error = new Error();
 //        error.setTimestamp(new Date());

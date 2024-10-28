@@ -9,7 +9,7 @@ spring:
   devtools:
     add-properties: true
   datasource:
-    url: jdbc:postgresql://auth-database:5170/authDb
+    url: jdbc:postgresql://auth-database:5432/authDb
     username: postgres
     password: password
 #  flyway:
@@ -29,7 +29,7 @@ spring:
 
 redis:
   host: auth-redis
-  port: 6370
+  port: 6379
 
 springdoc:
   api-docs:

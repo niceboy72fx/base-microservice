@@ -13,14 +13,13 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 @Configuration
-@Profile({"dev","test"})
 public class OpenApiConfig {
 
     @Bean
     public GroupedOpenApi publicApi(@Value("${openapi.service.api-docs}") String apiDocs) {
         return org.springdoc.core.models.GroupedOpenApi.builder()
                 .group(apiDocs) // /v3/api-docs/authentication-service
-                .packagesToScan("com.microservices.authentication_service.controller")
+                .packagesToScan("com.microservice.authentication_service.controller")
                 .build();
     }
 

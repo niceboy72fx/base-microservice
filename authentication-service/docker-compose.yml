@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  auth-service:
+    container_name: authentication-service
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      HOST_NAME: host.docker.internal
+    ports:
+      - '8083:8083'
