@@ -1,18 +1,44 @@
 version: "3.9"
 
 services:
-  #  redis:
-  #    image: redis:6.2-alpine
-  #    container_name: redis
-  #    hostname: redis
-  #    ports:
-  #      - '6379:6379'
-  #    environment:
-  #      - ALLOW_EMPTY_PASSWORD=yes
-  #      - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
-  #    networks:
-  #      - default
-  #
+    redis:
+      image: redis:6.2.16
+      container_name: redis
+      hostname: redis
+      ports:
+        - '6370:6379'
+      environment:
+        - ALLOW_EMPTY_PASSWORD=yes
+        - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
+      networks:
+        - default
+      healthcheck:
+        test: [ "CMD", "redis-cli", "ping" ]
+        interval: 3s
+        timeout: 20s
+        retries: 8
+
+    database:
+      image: postgres:17.0-alpine3.20
+      container_name: database
+      environment:
+        PGUSER: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: base_postgres
+        PGDATA: /data/postgres
+      ports:
+        - '5435:5432'
+      volumes:
+        - postgres:/data/postgres
+        - ./db/initdb.sql:/docker-entrypoint-initdb.d/init.sql
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+        interval: 3s
+        timeout: 20s
+        retries: 8
+      networks:
+        - default
   #  zookeeper:
   #    image: confluentinc/cp-zookeeper:latest
   #    container_name: zookeeper
@@ -36,88 +62,36 @@ services:
   #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
   #      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
   #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-  # API GATEWAY
-  # api-gateway:
-  #    container_name: api-gateway
-  #    build:
-  #      context: ./api-gateway
-  #      dockerfile: Dockerfile
-  #    environment:
-  #      HOST_NAME: host.docker.internal
-  #    ports:
-  #      - '4953:4953'
-  #    networks:
-  #      - default
-
-  # redis-gateway:
-  #    image: redis:6.2-alpine
-  #    container_name: redis-gateway
-  #    hostname: redis
-  #    ports:
-  #      - '6379:6379'
-  #    environment:
-  #      - ALLOW_EMPTY_PASSWORD=yes
-  #      - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
-  #    networks:
-  #      - default
+   #API GATEWAY
+#    api-gateway:
+#      container_name: api-gateway
+#      build:
+#        context: ./api-gateway
+#        dockerfile: Dockerfile
+#      environment:
+#        HOST_NAME: host.docker.internal
+#      ports:
+#          - '4953:4953'
+#      networks:
+#          - default
 
   # authentication's service #####################################################################
-  auth-redis:
-    image: redis:6.2-alpine
-    container_name: auth-redis
-    hostname: redis
-    ports:
-      - '6370:6379'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
-    networks:
-      - default
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 3s
-      timeout: 20s
-      retries: 8
-
-  auth-database:
-    image: postgres:17.0-alpine3.20
-    container_name: auth-database
-    environment:
-      PGUSER: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: authDb
-      PGDATA: /data/postgres
-    ports:
-      - '5170:5432'
-    volumes:
-      - postgres:/data/postgres
-      - ./db/initdb.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 3s
-      timeout: 20s
-      retries: 8
-    networks:
-      - default
-
-  auth-service:
-    container_name: authentication-service
-    build:
-      context: ./authentication-service
-      dockerfile: Dockerfile
-    environment:
-      HOST_NAME: host.docker.internal
-    ports:
-      - '8083:8083'
-    networks:
-      - default
-    depends_on:
-      auth-database:
-        condition: service_healthy
-      auth-redis:
-        condition: service_healthy
+#    auth-service:
+#      container_name: authentication-service
+#      build:
+#        context: ./authentication-service
+#        dockerfile: Dockerfile
+#      environment:
+#        HOST_NAME: host.docker.internal
+#      ports:
+#        - '8083:8083'
+#      networks:
+#        - default
+#      depends_on:
+#        database:
+#          condition: service_healthy
+#        redis:
+#          condition: service_healthy
 
 ## ACCOUNT SERVICE
 #
@@ -138,7 +112,7 @@ services:
 #    container_name: product-service
 #    build:
 #      context: ./product-service
-#      dockerfile: Dockerfile
+#      dockerfile: Dockerfilepro
 #    environment:
 #      HOST_NAME: host.docker.internal
 #    ports:

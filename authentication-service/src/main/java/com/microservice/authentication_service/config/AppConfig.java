@@ -3,6 +3,8 @@ package com.microservice.authentication_service.config;
 import com.microservice.authentication_service.service.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.server.security.authentication.BasicGrpcAuthenticationReader;
+import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,6 +69,12 @@ public class AppConfig {
                 .authenticationProvider(authenticationProvider);
         return http.build();
     }
+
+    @Bean
+    public GrpcAuthenticationReader grpcAuthenticationReader(){
+        return new BasicGrpcAuthenticationReader();
+    }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

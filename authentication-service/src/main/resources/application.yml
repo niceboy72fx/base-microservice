@@ -2,6 +2,7 @@
 server:
   port: 8083
 
+
 spring:
   application:
     name: authentication-service
@@ -9,7 +10,7 @@ spring:
   devtools:
     add-properties: true
   datasource:
-    url: jdbc:postgresql://auth-database:5432/authDb
+    url: jdbc:postgresql://localhost:5435/base_postgres
     username: postgres
     password: password
 #  flyway:
@@ -28,8 +29,8 @@ spring:
       ddl-auto: update
 
 redis:
-  host: auth-redis
-  port: 6379
+  host: localhost
+  port: 6370
 
 springdoc:
   api-docs:
@@ -43,6 +44,9 @@ openapi:
     title: Authentication service
     version: 1.0.0
 
+grpc:
+  server:
+    port: 9091
 
 jwt:
   expiryMinutes: 5

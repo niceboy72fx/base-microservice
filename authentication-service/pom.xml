@@ -28,6 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<grpc.version>1.68.0</grpc.version>
+		<protoc.version>3.21.12</protoc.version>
 	</properties>
 	<dependencies>
 		<!-- Health Check -->
@@ -87,21 +89,12 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.2.0</version>
 		</dependency>
-
-<!--		&lt;!&ndash; gRPC protocol buffer &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>vn.tayjava</groupId>-->
-<!--			<artifactId>proto</artifactId>-->
-<!--			<version>0.0.1-SNAPSHOT</version>-->
-<!--		</dependency>-->
-
-<!--		&lt;!&ndash; gRPC &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>net.devh</groupId>-->
-<!--			<artifactId>grpc-server-spring-boot-autoconfigure</artifactId>-->
-<!--			<version>2.14.0.RELEASE</version>-->
-<!--			<scope>compile</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-server-spring-boot-autoconfigure</artifactId>
+			<version>2.14.0.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -140,9 +133,56 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 		</dependency>
+
+		<!-- Gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.10</version>
+		</dependency>
+
+		<!-- gRPC begin -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty</artifactId>
+			<version>1.68.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>1.68.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>1.68.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-client-spring-boot-starter</artifactId>
+			<version>3.1.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.17.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<!-- gRPC end -->
 	</dependencies>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>kr.motd.maven</groupId>
+				<artifactId>os-maven-plugin</artifactId>
+				<version>1.6.1</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -155,6 +195,32 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<!-- Protocol compiler for build .proto -->
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>0.6.1</version>
+				<configuration>
+					<protocArtifact>
+						com.google.protobuf:protoc:3.21.12:exe:${os.detected.classifier}
+					</protocArtifact>
+					<pluginId>grpc-java</pluginId>
+					<pluginArtifact>
+						io.grpc:protoc-gen-grpc-java:1.62.2:exe:${os.detected.classifier}
+					</pluginArtifact>
+					<protoSourceRoot>
+						src/main/proto
+					</protoSourceRoot>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>compile-custom</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

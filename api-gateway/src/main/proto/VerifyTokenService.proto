@@ -1,0 +1,17 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package com.microservice.grpcserver;
+
+
+service VerifyTokenService {
+  rpc verifyAccessToken(VerifyRequest) returns (VerifyResponse);
+}
+
+message VerifyRequest {
+  string token = 1;
+}
+
+message VerifyResponse {
+  bool isVerified = 1;
+  string message = 2;
+}
