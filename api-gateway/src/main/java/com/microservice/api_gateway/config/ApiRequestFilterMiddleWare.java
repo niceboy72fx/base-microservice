@@ -36,6 +36,8 @@ public class ApiRequestFilterMiddleWare extends AbstractGatewayFilterFactory<Api
         List<String> permitUrls = new LinkedList<>();
         permitUrls.add("/access-token");
         permitUrls.add("/refresh-token");
+        permitUrls.add("/register");
+        permitUrls.add("/login");
         return permitUrls.contains(url);
     }
 

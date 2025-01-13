@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.REFERER;
 
 @Service
@@ -118,7 +119,7 @@ public class AuthenServiceImplement implements AuthenticationService {
 
     @Override
     public TokenResponse createRefreshToken(HttpServletRequest request) {
-        final String refreshToken = request.getHeader(REFERER);
+        final String refreshToken = request.getHeader(AUTHORIZATION);
 
         if (StringUtils.isBlank(refreshToken)) {
             throw new InvalidDataException("Token must be not blank");

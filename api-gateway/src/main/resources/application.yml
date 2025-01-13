@@ -16,14 +16,10 @@ spring:
         - id: authentication-service
           uri: http://localhost:8083
           predicates:
-            - Path=/auth/**
-            - Path=/auth
-            - Path=/v3/api-docs/authentication-service
-          args:
-            message: "Request path: #{request.path}"
+            - Path=/auth/**, /v3/api-docs/authentication-service
           filters:
             - RewritePath=/auth/(?<segment>.*), /${segment}
-#            - ApiRequestFilterMiddleWare
+            - ApiRequestFilterMiddleWare
         # Uncomment to add more services
         # - id: account-service
         #   uri: http://localhost:8082
