@@ -73,7 +73,7 @@ public class ApiRequestFilterMiddleWare extends AbstractGatewayFilterFactory<Api
                 HttpHeaders headers = new HttpHeaders();
                 headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
                 HttpEntity<String> entity = new HttpEntity<>(headers);
-                final String token = request.getHeaders().getOrEmpty("Authorization").get(0).substring(7);
+                final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
                 VerifyResponse verifyToken = verifyTokenService.verifyToken(token);
                 if (!verifyToken.getIsVerified()) {
                     return error(exchange.getResponse(), url, verifyToken.getMessage());

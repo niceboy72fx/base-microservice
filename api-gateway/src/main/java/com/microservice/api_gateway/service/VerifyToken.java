@@ -10,14 +10,13 @@ import com.microservice.grpcserver.VerifyTokenServiceGrpc;
 @Service
 @Slf4j
 public class VerifyToken {
-    @GrpcClient("verify-token-service")
-    private VerifyTokenServiceGrpc.VerifyTokenServiceBlockingStub verifyTokenServiceBlockingStub;
+        @GrpcClient("verify-token-service")
+        private VerifyTokenServiceGrpc.VerifyTokenServiceBlockingStub verifyTokenServiceBlockingStub;
 
-    public VerifyResponse verifyToken(String token) {
-        log.info("-----[ verifyToken ]-----");
-        VerifyRequest verifyRequest = VerifyRequest.newBuilder().setToken(token).build();
-        VerifyResponse response = verifyTokenServiceBlockingStub.verifyAccessToken(verifyRequest);
-
-        return response;
-    }
+        public VerifyResponse verifyToken(String token) {
+            log.info("-----[ verifyToken ]-----");
+            VerifyRequest verifyRequest = VerifyRequest.newBuilder().setToken(token).build();
+            VerifyResponse response = verifyTokenServiceBlockingStub.verifyAccessToken(verifyRequest);
+            return response;
+        }
 }

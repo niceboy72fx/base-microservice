@@ -20,14 +20,14 @@ spring:
           filters:
             - RewritePath=/auth/(?<segment>.*), /${segment}
             - ApiRequestFilterMiddleWare
-        # Uncomment to add more services
-        # - id: account-service
-        #   uri: http://localhost:8082
-        #   predicates:
-        #     - Path=/account/**, /v3/api-docs/account-service
-        #   filters:
-        #     - RewritePath=/account/(?<segment>.*), /${segment}
-        #     - ApiRequestFilter
+
+        - id: product-service
+          uri: http://localhost:8085
+          predicates:
+             - Path=/product/**, /v3/api-docs/procuct-service
+          filters:
+             - RewritePath=/product/(?<segment>.*), /${segment}
+             - ApiRequestFilterMiddleWare
         # More services can be added similarly...
 
 springdoc:
@@ -51,13 +51,16 @@ redis:
 grpc:
   client:
     verify-token-service:
-      address: localhost:9091
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
+      address: static://127.0.0.1:9091
+#      port: 9091
+#      enableKeepAlive: true
+#      keepAliveWithoutCalls: true
       negotiationType: plaintext
 
 logging:
   level:
+    net.devh: DEBUG
+    io.grpc: DEBUG
     org.springframework.cloud.gateway: DEBUG  # Enables detailed logs for Spring Cloud Gateway
 #    org.springframework.web: DEBUG           # Enables logging for Spring web components
 #    org.springframework.boot: DEBUG         # Logs Spring Boot internal processes

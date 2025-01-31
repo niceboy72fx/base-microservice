@@ -22,8 +22,8 @@ public class VerifyTokenGrpc extends VerifyTokenServiceGrpc.VerifyTokenServiceIm
 
         @Override
         public void verifyAccessToken(VerifyRequest request, StreamObserver<VerifyResponse> responseObserver) {
-            log.info("-----[ verifyToken ]-----");
             VerifyResponse response;
+            log.info(request.toString());
             try {
                 jwtService.extractUsername(request.getToken(), TokenType.ACCESS_TOKEN);
                 response = VerifyResponse.newBuilder().setIsVerified(true).setMessage("Token is valid").build();
@@ -32,7 +32,6 @@ public class VerifyTokenGrpc extends VerifyTokenServiceGrpc.VerifyTokenServiceIm
             } catch (ExpiredJwtException ex) {
                 response = VerifyResponse.newBuilder().setIsVerified(false).setMessage(ex.getMessage()).build();
             }
-
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
