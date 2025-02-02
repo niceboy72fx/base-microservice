@@ -39,6 +39,16 @@ services:
         retries: 8
       networks:
         - default
+
+    elastic-search:
+      image: elasticsearch:7.14.1
+      container_name: elasticsearch
+      restart: always
+      ports:
+        - "9200:9200"
+      environment:
+        - discovery.type=single-node
+        
   #  zookeeper:
   #    image: confluentinc/cp-zookeeper:latest
   #    container_name: zookeeper

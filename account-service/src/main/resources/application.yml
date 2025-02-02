@@ -1,0 +1,6 @@
+server:
+    port: 808
+
+spring:
+    application:
+        name: account-service
