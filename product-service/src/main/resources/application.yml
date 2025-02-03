@@ -27,6 +27,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  elasticsearch:
+     uris: http://localhost:9200
+
 
 redis:
   host: localhost
@@ -39,9 +42,9 @@ springdoc:
     enabled: true
 openapi:
   service:
-    api-docs: authentication-service
+    api-docs: product-service
     server: http://localhost:${server.port}
-    title: Authentication service
+    title: Product service
     version: 1.0.0
 
 
