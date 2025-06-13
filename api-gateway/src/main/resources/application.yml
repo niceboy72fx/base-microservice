@@ -24,11 +24,34 @@ spring:
         - id: product-service
           uri: http://localhost:8085
           predicates:
-             - Path=/product/**, /v3/api-docs/procuct-service
+            - Path=/product/**, /v3/api-docs/procuct-service
+          filters:
+            - RewritePath=/product/(?<segment>.*), /${segment}
+            - ApiRequestFilterMiddleWare
+
+        - id: account-service
+          uri: http://localhost:8082
+          predicates:
+             - Path=/product/**, /v3/api-docs/account-service
           filters:
              - RewritePath=/product/(?<segment>.*), /${segment}
              - ApiRequestFilterMiddleWare
-        # More services can be added similarly...
+
+        - id: order-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/product/**, /v3/api-docs/order-service
+          filters:
+            - RewritePath=/product/(?<segment>.*), /${segment}
+            - ApiRequestFilterMiddleWare
+
+        - id: payment-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/product/**, /v3/api-docs/payment-service
+          filters:
+            - RewritePath=/product/(?<segment>.*), /${segment}
+            - ApiRequestFilterMiddleWare
 
 springdoc:
   api-docs:

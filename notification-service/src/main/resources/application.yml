@@ -1,0 +1,31 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    add-properties: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+openapi:
+  service:
+    api-docs: notification-service
+    server: http://localhost:${server.port}
+    title: Notification service
+    version: 1.0.0
+
+oneSignal:
+  apiUrl: ${ONE_SIGNAL_API_URL:https://onesignal.com/api/v1/notifications}
+  appId: ${APP_ID}
+  apiKey: ${REST_API_KEY}

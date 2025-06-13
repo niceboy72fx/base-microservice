@@ -1,0 +1,49 @@
+
+server:
+  port: 8084
+
+
+spring:
+  application:
+    name: order-service
+  jackson.serialization.indent_output: true
+  devtools:
+    add-properties: true
+  data:
+    mongodb:
+        host: localhost
+        port: 27017
+        database: orderDB
+        username: mongo
+        password: 1181080029
+        authentication-database: admin
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
+    topic:
+      checkoutOrder: checkout-order-topic
+      updateInventory: update-inventory-topic
+      notifyOrderStatus: notify-order-topic
+
+
+redis:
+  host: localhost
+  port: 6370
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+openapi:
+  service:
+    api-docs: order-service
+    server: http://localhost:${server.port}
+    title: Order service
+    version: 1.0.0
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
